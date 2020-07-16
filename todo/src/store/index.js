@@ -8,8 +8,8 @@ export default new Vuex.Store({
     items: []
   },
   mutations: {
-    addItem(state, item) {
-      state.items.push(item)
+    addItem(state, items) {
+      state.items.push(items)
     },
     initItem(state, items) {
       state.items = items

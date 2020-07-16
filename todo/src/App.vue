@@ -20,9 +20,9 @@ export default {
   //     return val.toUpperCase()
   //   }
   // },
-  // mounted () {
-  //   this.initItem(JSON.parse(localStorage['todoItems']))
-  // },
+  mounted () {
+    this.initItem(JSON.parse(localStorage['todoItems']))
+  },
   computed: {
     ...mapState(['items']),
     sortedItem () {
@@ -42,8 +42,7 @@ export default {
         }
         return ele
       })
-      // this.initItem(JSON.parse(localStorage['todoItems']))
-      this.initItem(localStorage['todoItems'])
+      localStorage['todoItems'] = JSON.stringify(this.$store.state.items)
     },
     save (text) {
       this.addItem({
@@ -51,7 +50,8 @@ export default {
         time: Date.now(),
         completed: false
       })
-      // localStorage['todoItems'] = JSON.stringify(this.items.text)
+      localStorage['todoItems'] = JSON.stringify(this.$store.state.items)
+      // localStorage.setItem('todoItem', JSON.stringify(this.$store.state))
     }
   }
 }
