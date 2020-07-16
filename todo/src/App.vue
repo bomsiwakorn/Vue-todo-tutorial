@@ -1,37 +1,30 @@
 <template>
   <div id="app">
-    <ul>
-      <li v-for="item in sortedItem" :key="item.time">
-        <button @click="done(item.time)">Done</button>
-        {{item.text | capitalized}}
-      </li>
-    </ul>
-    <form action="" @submit.enter.prevent="save()">
-      <input type="text" v-model="inputText">
-      <button type="submit">Save</button>
-    </form>
+    <TodoList :items="sortedItem" @onItemDone="done"></TodoList>
+    <InputForm @onSave="save"></InputForm>
   </div>
 </template>
 
 <script>
-
+import TodoList from '@/components/TodoList'
+import InputForm from '@/components/InputForm'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'App',
-  data() {
-    return {
-      inputText: '',
-      items: [],
-    }
+  components: {
+    TodoList,
+    InputForm
   },
-  filters: {
-    capitalized (val) {
-      return val.toUpperCase()
-    }
-  },
-  mounted () {
-    this.items = JSON.parse(localStorage['todoItems'])
-  },
+  // filters: {
+  //   capitalized (val) {
+  //     return val.toUpperCase()
+  //   }
+  // },
+  // mounted () {
+  //   this.initItem(JSON.parse(localStorage['todoItems']))
+  // },
   computed: {
+    ...mapState(['items']),
     sortedItem () {
       return this.items.sort((a,b) => {
         return b.time - a.time
@@ -41,6 +34,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['addItem', 'initItem']),
     done (id) {
       this.items = this.items.map(ele => {
         if (id === ele.time) {
@@ -48,15 +42,16 @@ export default {
         }
         return ele
       })
-      localStorage['todoItems'] = JSON.stringify(this.items)
+      // this.initItem(JSON.parse(localStorage['todoItems']))
+      this.initItem(localStorage['todoItems'])
     },
-    save () {
-      this.items.push({
-        text: this.inputText,
+    save (text) {
+      this.addItem({
+        text: text,
         time: Date.now(),
         completed: false
       })
-      localStorage['todoItems'] = JSON.stringify(this.items)
+      // localStorage['todoItems'] = JSON.stringify(this.items.text)
     }
   }
 }
